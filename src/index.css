@@ -1,6 +1,6 @@
 .vote_page>* {
-    margin-left: 100px;
-    margin-right: 100px;
+    margin-left: 200px;
+    margin-right: 200px;
 }
 
 .proposal_title {
@@ -44,7 +44,7 @@
     padding-left: 50px;
     padding-top: 10px;
     font-size: 20px;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-family: 'Gill Sans', 'Gill Sans MT', 'Calibri', 'Trebuchet MS', sans-serif;
 }
 
 .metric_content>* {
@@ -62,4 +62,45 @@
 
 .h_right {
     font-weight: 700;
+}
+
+.popup {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: -200px;
+    background: rgba(0, 0, 0, 0.6);
+}
+
+.popup_inner {
+    width: 400px;
+    position: relative;
+    top: 30%;
+    margin: auto;
+    background: white;
+}
+
+.popup_header {
+    display: flex;
+    background: aquamarine;
+    padding: 15px;
+}
+
+.popup_content {
+    padding: 15px;
+    line-height: 1.8;
+}
+
+.box_input {
+    position: absolute;
+    right: 80px;
+    width: 100px;
+    line-height: 20px;
+}
+
+.popup_button {
+    padding: 10px 20px;
+    text-align: right;
+    background: var(aquamarine);
 }

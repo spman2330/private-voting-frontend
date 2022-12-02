@@ -1,4 +1,5 @@
 import React from 'react';
+
 const Menu = ({ polls, setPage, setPollId }) => {
     return (
         <div id="menu" class="row">
@@ -10,6 +11,7 @@ const Menu = ({ polls, setPage, setPollId }) => {
         </div>
     );
 };
+
 const Poll = ({ poll, setPage, setPollId }) => {
     const handleClick = () => {
         setPage("Poll");
