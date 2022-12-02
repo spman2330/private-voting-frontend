@@ -1,6 +1,7 @@
+import { votePoll } from "../../../helper/api";
 
 
-function Option({ voting_power, setPopup }) {
+function Option({ id, voting_power, setPopup }) {
 
     return (<div className="popup">
         <div className="popup_inner">
@@ -14,10 +15,15 @@ function Option({ voting_power, setPopup }) {
                 <input className="box_input" id="vote_for"></input>
                 <br></br>
                 <div className="h_left">Vote Against</div>
-                <input className="box_input" id="vote_againt" ></input>
+                <input className="box_input" id="vote_against" ></input>
                 <br></br>
                 <div className="popup_button">
-                    <button className="confirm" onClick={() => { setPopup({ action: "none" }) }}>Confirm</button>
+                    <button className="confirm" onClick={async () => {
+                        const yes = document.getElementById("vote_for").value;
+                        const no = document.getElementById("vote_against").value;
+                        await votePoll(id, yes, no);
+                        setPopup({ action: "none" })
+                    }}>Confirm</button>
                 </div>
             </div>
         </div>

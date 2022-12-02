@@ -1,10 +1,21 @@
 import React from 'react';
+// import token from "../contracts/Token.json"
+// import vote from "../contracts/Voting.json"
 
 const Bar = ({ address, setAddress }) => {
 
-    const connectWallet = () => {
+    const connectWallet = async () => {
         // logic connect wallet
-        setAddress('0xa8C8d2E38407377bCF82d5AAe4783efaB87044f1');
+        // await window.ethereum.request({ method: 'eth_requestAccounts' });
+        // const TOKEN_ADDRESS = 0;
+        // const VOTE_ADDRESS = 0;
+        // const provider = new ethers.providers.Web3Provider(window.ethereum);
+        // const signer = provider.getSigner();
+        // const tokenContract = new ethers.Contract(TOKEN_ADDRESS, token.abi, signer);
+        // const votingContract = new ethers.Contract(VOTE_ADDRESS, vote.abi, signer);
+        // localStorage.setItem("signer", JSON.stringify(signer));
+        // localStorage.setItem("tokenContract", JSON.stringify(tokenContract));
+        // localStorage.setItem("votingContract", JSON.stringify(votingContract));
     }
     return (
         <div id="bar" class="border border-dark row" >

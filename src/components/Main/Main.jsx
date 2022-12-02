@@ -8,7 +8,7 @@ import Voting from "../Voting/Voting"
 import VotePage from "../vote/index"
 const mockData = {
     polls: [{
-        id: 101,
+        id: 12,
         title: "title-01",
         status: "pending",
         start: "July 7th, 2022",
@@ -33,7 +33,7 @@ const mockData = {
             }
         ]
     }, {
-        id: "102",
+        id: 1,
         title: "title-02",
         status: "activate",
         start: "July 7th, 2022",
@@ -58,7 +58,7 @@ const mockData = {
             }
         ]
     }, {
-        id: "103",
+        id: 13,
         title: "title-03",
         status: "closed",
         start: "July 7th, 2022",
@@ -106,7 +106,7 @@ const Main = () => {
             <Bar address={address} setAddress={setAddress} />
             {page == "Menu" && < Menu polls={polls} setPage={setPage} setPollId={setPollId} />}
             {page == "Poll" && < Poll poll={polls.find(poll => poll.id === pollId)} setPage={setPage} />}
-            {page == "Register" && <VotePage proposal={pollId} />}
+            {page == "Register" && <VotePage proposal={polls.find(poll => poll.id === pollId)} />}
             {/* <Voting pollId={pollId} setPage={setPage} />}
              */}
         </div>

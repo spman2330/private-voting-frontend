@@ -12,7 +12,7 @@ function VotePage({ proposal }) {
 
     var voting_power = metrics.reduce((sum, e) => sum + (e.amount * e.factor), 0)
 
-    fetchMetric(proposal)
+    fetchMetric(proposal.id)
         .then(data => {
             if (JSON.stringify(metrics) !== JSON.stringify(data))
                 setMetrics(data);
@@ -31,7 +31,7 @@ function VotePage({ proposal }) {
         <div className="vote_content">
             {metrics.map((data, index) => <Metric data={data} key={index} setPopup={setPopup}></Metric>)}
         </div>
-        {popup.action == "none" ? null : (popup.action == "vote" ? <Option voting_power={voting_power} setPopup={setPopup} /> :
+        {popup.action == "none" ? null : (popup.action == "vote" ? <Option voting_power={voting_power} setPopup={setPopup} id={proposal.id} /> :
             <Register metric={popup.metric} setPopup={setPopup} />)}
 
     </div >);
