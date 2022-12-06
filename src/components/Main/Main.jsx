@@ -6,6 +6,7 @@ import Menu from "../Menu/Menu";
 import Poll from "../Poll/Poll";
 import Voting from "../Voting/Voting"
 import VotePage from "../vote/index"
+import { getCountPolls } from '../../helper/poll';
 const mockData = {
     polls: [{
         id: 12,
@@ -90,6 +91,7 @@ const mockData = {
     ]
 }
 const Main = () => {
+
     const [address, setAddress] = useState();
     const [polls, setPolls] = useState(mockData.polls);
     const [page, setPage] = useState("Menu");

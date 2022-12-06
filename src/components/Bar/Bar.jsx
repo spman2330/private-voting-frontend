@@ -1,10 +1,14 @@
 import React from 'react';
+import { connectMetamask } from '../../helper/connectWallet';
+import { getountPoll } from '../../helper/poll';
 // import token from "../contracts/Token.json"
 // import vote from "../contracts/Voting.json"
 
 const Bar = ({ address, setAddress }) => {
 
     const connectWallet = async () => {
+
+        connectMetamask();
         // logic connect wallet
         // await window.ethereum.request({ method: 'eth_requestAccounts' });
         // const TOKEN_ADDRESS = 0;

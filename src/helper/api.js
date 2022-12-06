@@ -10,6 +10,7 @@ export async function fetchMetric(pollId) {
     console.log(pollId);
     await window.ethereum.request({ method: 'eth_requestAccounts' });
 
+
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     console.log(provider);
     const signer = provider.getSigner();
@@ -18,6 +19,8 @@ export async function fetchMetric(pollId) {
     const timestamp = (await votingContract.polls(pollId)).startTimeStamp;
     let amount = (await tokenContract.getPriorVotes(signer.getAddress(), timestamp));
     amount = await amount.toString();
+
+
     return [
         {
             name: 'Snapshot Token',
@@ -36,6 +39,9 @@ export async function fetchMetric(pollId) {
         }
     ]
 }
+
+
+
 const genCallData = async (proof, publicSignals) => {
     var callData = (
         await snarkjs.groth16.exportSolidityCallData(proof, publicSignals)
