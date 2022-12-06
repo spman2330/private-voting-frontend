@@ -7,13 +7,11 @@ function Register({ metric, setPopup }) {
 
     const enterPassword = async (password) => {
         //// api
-        console.log(password)
         setState(1);
     }
 
     const generatePower = async (power) => {
         ////api
-        console.log(power);
         setPopup({ action: "none" })
     }
     return (<div className="popup">

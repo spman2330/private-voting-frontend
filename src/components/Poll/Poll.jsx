@@ -1,4 +1,5 @@
 import React from 'react';
+import { convertTime } from '../../helper/api';
 const Poll = ({ poll, setPage }) => {
     const handleClick = () => {
         setPage("Menu");
@@ -14,18 +15,18 @@ const Poll = ({ poll, setPage }) => {
             <div class="row">
                 <div class="col-3"> {poll.title}</div>
                 <div class="col-2 border"> {poll.status}</div>
-                {poll.status === "activate" &&
+                {poll.status === "Active" &&
                     <div class="col-4">
                         <button onClick={handleRegister}>Register Voting Power</button>
                     </div>
                 }
             </div>
             <div class="row">
-                <div class="col-3">Start: {poll.start}</div>
-                <div class="col-3">Close: {poll.end}</div>
+                <div class="col-3">Start: {convertTime(poll.start)}</div>
+                <div class="col-3">Close: {convertTime(poll.end)}</div>
             </div>
             <div class="row">
-                {poll.status !== "closed" ?
+                {poll.status !== "Done" ?
                     <>Voting results will be announced only after voting ends</> :
                     <>
                         <div class="row"> For: {poll.for}</div>
@@ -40,7 +41,13 @@ const Poll = ({ poll, setPage }) => {
                 {poll.text}
             </div>
             <div class="row">
-                Dao manager public key: {poll.pub}
+                Dao manager public key:
+            </div>
+            <div class="row">
+                {poll.pubKey[0].toString()}
+            </div>
+            <div class="row">
+                {poll.pubKey[1].toString()}
             </div>
             <div class="row">
                 Metrics

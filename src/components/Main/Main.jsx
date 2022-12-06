@@ -4,9 +4,9 @@ import "./Main.css";
 import Bar from "../Bar/Bar";
 import Menu from "../Menu/Menu";
 import Poll from "../Poll/Poll";
-import Voting from "../Voting/Voting"
 import VotePage from "../vote/index"
-import { getCountPolls } from '../../helper/poll';
+import { getListPoll, reduce } from '../../helper/api';
+import { ethers } from "ethers";
 const mockData = {
     polls: [{
         id: 12,
@@ -92,20 +92,28 @@ const mockData = {
 }
 const Main = () => {
 
-    const [address, setAddress] = useState();
-    const [polls, setPolls] = useState(mockData.polls);
+    const [address, setAddress] = useState('');
+    const [polls, setPolls] = useState([]);
     const [page, setPage] = useState("Menu");
     const [pollId, setPollId] = useState();
     useEffect(() => {
-        // get address from local storage if exist
+        const checkConnection = async () => {
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            const addresses = await provider.listAccounts();
+            if (addresses.length) {
+                const walletAddress = addresses[0];
+                setAddress(walletAddress);
+                var list = await getListPoll(walletAddress);
+                setPolls(list);
+            }
 
-        // get list of poll from contract
-        setPolls(mockData.polls);
+        };
+        checkConnection();
     }, [address, polls]);
 
     return (
         <div id="main" class="container">
-            <Bar address={address} setAddress={setAddress} />
+            <Bar address={reduce(address)} setAddress={setAddress} />
             {page == "Menu" && < Menu polls={polls} setPage={setPage} setPollId={setPollId} />}
             {page == "Poll" && < Poll poll={polls.find(poll => poll.id === pollId)} setPage={setPage} />}
             {page == "Register" && <VotePage proposal={polls.find(poll => poll.id === pollId)} />}

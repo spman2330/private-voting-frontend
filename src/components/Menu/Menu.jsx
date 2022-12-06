@@ -1,4 +1,5 @@
 import React from 'react';
+import { convertTime } from '../../helper/api';
 
 const Menu = ({ polls, setPage, setPollId }) => {
     return (
@@ -23,12 +24,12 @@ const Poll = ({ poll, setPage, setPollId }) => {
                 <div class="row">{poll.title}</div>
                 <div class="row">
                     <div class="col-1">{poll.status}</div>
-                    <div class="col-3">start: {poll.start}</div>
-                    <div class="col-3">end: {poll.end}</div>
+                    <div class="col-4">start: {convertTime(poll.start)}</div>
+                    <div class="col-4">end: {convertTime(poll.end)}</div>
                 </div>
             </div>
             <div class="col-4">
-                {poll.status !== "closed" ?
+                {poll.status !== "Done" ?
                     <div class="row">Voting results will be announced only after voting ends</div> :
                     <div>
                         <div class="row"> For: {poll.for}</div>

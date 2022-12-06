@@ -1,36 +1,34 @@
 import { BigNumber, ethers } from "ethers";
 import token from "../contracts/Token.json"
 import vote from "../contracts/Voting.json"
-const VOTE_ADDRESS = '0x59ed3b3073443656CD0854857865f77C51BFa9AB';
-const TOKEN_ADDRESS = '0x4c4274e95baff67F0687EFd1D93f3e56e12b399D';
+const VOTE_ADDRESS = '0xe32ED7aEE08BcAaaf4Ff1426dd472557b47e350e';
+const TOKEN_ADDRESS = '0xECB91C95f10beF9549e554151b32ef5A5bfDe320';
 const snarkjs = window.snarkjs;
 const BigInt = window.BigInt;
-
+const status = ["Pending",
+    "Active",
+    "Done",
+    "Canceled",
+    "Succeeded"]
 export async function fetchMetric(pollId) {
-    console.log(pollId);
     await window.ethereum.request({ method: 'eth_requestAccounts' });
-
-
     const provider = new ethers.providers.Web3Provider(window.ethereum);
-    console.log(provider);
     const signer = provider.getSigner();
     const tokenContract = new ethers.Contract(TOKEN_ADDRESS, token.abi, signer);
     const votingContract = new ethers.Contract(VOTE_ADDRESS, vote.abi, signer);
     const timestamp = (await votingContract.polls(pollId)).startTimeStamp;
     let amount = (await tokenContract.getPriorVotes(signer.getAddress(), timestamp));
     amount = await amount.toString();
-
-
     return [
         {
             name: 'Snapshot Token',
             amount,
-            factor: 2
+            factor: 1
         },
         {
             name: 'Credit Score',
             amount: 500,
-            factor: 2
+            factor: 0
         },
         {
             name: 'Trava Reputation',
@@ -39,9 +37,6 @@ export async function fetchMetric(pollId) {
         }
     ]
 }
-
-
-
 const genCallData = async (proof, publicSignals) => {
     var callData = (
         await snarkjs.groth16.exportSolidityCallData(proof, publicSignals)
@@ -64,7 +59,6 @@ const genCallData = async (proof, publicSignals) => {
 }
 
 export async function votePoll(id, yes, no) {
-    id = 4
     await window.ethereum.request({ method: 'eth_requestAccounts' });
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
@@ -103,3 +97,68 @@ export async function votePoll(id, yes, no) {
     await transaction.wait();
 }
 
+export function reduce(address) {
+    var reduceAddress = address.slice(0, 6) + "..." + address.slice(-4);
+    return reduceAddress;
+}
+export function convertTime(time) {
+    const date = new Date(parseInt(time) * 1000);
+    const [month, day, year, hour, minutes, seconds] = [
+        date.getMonth(),
+        date.getDate(),
+        date.getFullYear(),
+        date.getHours(),
+        date.getMinutes(),
+        date.getSeconds(),
+    ];
+    const formattedTime = day + '/' + month + '/' + year + " " + hour + ':' + minutes + ':' + seconds;
+    return formattedTime;
+}
+export async function connectMetamask() {
+    const accounts = await window.ethereum.request({
+        method: "eth_requestAccounts",
+    });
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const walletAddress = accounts[0];
+    return walletAddress;
+}
+export async function getListPoll(address) {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner(address);
+    const tokenContract = new ethers.Contract(TOKEN_ADDRESS, token.abi, signer);
+    const votingContract = new ethers.Contract(VOTE_ADDRESS, vote.abi, signer);
+    var count = await votingContract.pollCount();
+    count = Number(count);
+    var data = [];
+    for (let i = 1; i <= count; i++) {
+        var datai = await votingContract.polls(i);
+        const dataii = {};
+        dataii.id = Number(datai.id);
+        [dataii.title, dataii.text] = datai.content.split('|');
+        dataii.status = status[await votingContract.state(dataii.id)];
+        dataii.start = datai.startTimeStamp;
+        dataii.end = dataii.start + datai.duration;
+        dataii.for = Number(datai.numberVoteYes);
+        dataii.against = Number(datai.numberVoteNo);
+        dataii.pubKey = await votingContract.getPublicKey(dataii.id);
+        dataii.metrics = [
+            {
+                name: "Snapshot token",
+                factor: 1,
+                isZiden: false
+            },
+            {
+                name: "Credit score",
+                factor: 0,
+                isZiden: true
+            },
+            {
+                name: "Trava Reputation",
+                factor: 1,
+                isZiden: true
+            }
+        ]
+        data.push(dataii);
+    }
+    return data;
+}   

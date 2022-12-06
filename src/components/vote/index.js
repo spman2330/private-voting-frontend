@@ -1,5 +1,4 @@
 import Metric from "./metric";
-import { fetchProposal } from "../../helper/api.js";
 import { useState } from "react";
 import { fetchMetric } from "../../helper/api";
 import Option from "./popup/option";
@@ -31,7 +30,7 @@ function VotePage({ proposal }) {
         <div className="vote_content">
             {metrics.map((data, index) => <Metric data={data} key={index} setPopup={setPopup}></Metric>)}
         </div>
-        {popup.action == "none" ? null : (popup.action == "vote" ? <Option voting_power={voting_power} setPopup={setPopup} id={proposal.id} /> :
+        {popup.action === "none" ? null : (popup.action === "vote" ? <Option voting_power={voting_power} setPopup={setPopup} id={proposal.id} /> :
             <Register metric={popup.metric} setPopup={setPopup} />)}
 
     </div >);
