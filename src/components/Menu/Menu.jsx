@@ -19,7 +19,7 @@ const Poll = ({ poll, setPage, setPollId }) => {
         setPollId(poll.id);
     }
     return (
-        <div id={"poll-" + poll.id} class="border border-black row" onClick={handleClick}>
+        <div id={"poll-" + poll.id} class="border border-black row mb-2" onClick={handleClick}>
             <div class="col-8">
                 <div class="row">{poll.title}</div>
                 <div class="row">
@@ -30,7 +30,7 @@ const Poll = ({ poll, setPage, setPollId }) => {
             </div>
             <div class="col-4">
                 {poll.status !== "Done" ?
-                    <div class="row">Voting results will be announced only after voting ends</div> :
+                    <div class="row">Voting results will be announced only after done</div> :
                     <div>
                         <div class="row"> For: {poll.for}</div>
                         <div class="row">Against: {poll.against}</div>

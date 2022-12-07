@@ -98,25 +98,29 @@ const Main = () => {
     const [pollId, setPollId] = useState();
     useEffect(() => {
         const checkConnection = async () => {
+            var list = await getListPoll();
+            setPolls(list);
             const provider = new ethers.providers.Web3Provider(window.ethereum);
             const addresses = await provider.listAccounts();
             if (addresses.length) {
                 const walletAddress = addresses[0];
                 setAddress(walletAddress);
-                var list = await getListPoll(walletAddress);
-                setPolls(list);
             }
 
         };
+
         checkConnection();
     }, [address, polls]);
 
     return (
         <div id="main" class="container">
             <Bar address={reduce(address)} setAddress={setAddress} />
-            {page == "Menu" && < Menu polls={polls} setPage={setPage} setPollId={setPollId} />}
-            {page == "Poll" && < Poll poll={polls.find(poll => poll.id === pollId)} setPage={setPage} />}
-            {page == "Register" && <VotePage proposal={polls.find(poll => poll.id === pollId)} />}
+            <div id="page" class="mt-4">
+                {page == "Menu" && < Menu polls={polls} setPage={setPage} setPollId={setPollId} />}
+                {page == "Poll" && < Poll poll={polls.find(poll => poll.id === pollId)} setPage={setPage} />}
+                {page == "Register" && <VotePage proposal={polls.find(poll => poll.id === pollId)} setPage={setPage} />}
+            </div>
+
             {/* <Voting pollId={pollId} setPage={setPage} />}
              */}
         </div>

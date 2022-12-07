@@ -1,6 +1,8 @@
 import { BigNumber, ethers } from "ethers";
+
 import token from "../contracts/Token.json"
 import vote from "../contracts/Voting.json"
+import Web3 from 'web3'
 const VOTE_ADDRESS = '0xe32ED7aEE08BcAaaf4Ff1426dd472557b47e350e';
 const TOKEN_ADDRESS = '0xECB91C95f10beF9549e554151b32ef5A5bfDe320';
 const snarkjs = window.snarkjs;
@@ -122,25 +124,25 @@ export async function connectMetamask() {
     const walletAddress = accounts[0];
     return walletAddress;
 }
-export async function getListPoll(address) {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner(address);
-    const tokenContract = new ethers.Contract(TOKEN_ADDRESS, token.abi, signer);
-    const votingContract = new ethers.Contract(VOTE_ADDRESS, vote.abi, signer);
-    var count = await votingContract.pollCount();
+export async function getListPoll() {
+    const url = 'https://data-seed-prebsc-1-s1.binance.org:8545/';
+    const provider = new Web3.providers.HttpProvider(url)
+    const web3 = new Web3(provider);
+    const votingContract = new web3.eth.Contract(vote.abi, VOTE_ADDRESS);
+    var count = await votingContract.methods.pollCount().call();
     count = Number(count);
     var data = [];
     for (let i = 1; i <= count; i++) {
-        var datai = await votingContract.polls(i);
+        var datai = await votingContract.methods.polls(i).call();
         const dataii = {};
         dataii.id = Number(datai.id);
         [dataii.title, dataii.text] = datai.content.split('|');
-        dataii.status = status[await votingContract.state(dataii.id)];
+        dataii.status = status[await votingContract.methods.state(dataii.id).call()];
         dataii.start = datai.startTimeStamp;
-        dataii.end = dataii.start + datai.duration;
+        dataii.end = +dataii.start + +datai.duration;
         dataii.for = Number(datai.numberVoteYes);
         dataii.against = Number(datai.numberVoteNo);
-        dataii.pubKey = await votingContract.getPublicKey(dataii.id);
+        dataii.pubKey = await votingContract.methods.getPublicKey(dataii.id).call();
         dataii.metrics = [
             {
                 name: "Snapshot token",

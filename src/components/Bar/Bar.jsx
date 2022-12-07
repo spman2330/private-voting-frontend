@@ -11,7 +11,7 @@ const Bar = ({ address, setAddress }) => {
         setAddress(walletAddress);
     }
     return (
-        <div id="bar" class="border border-dark row" >
+        <div id="bar" class="border border-dark row mt-4" >
             <div id="logo" class="col-1">logo</div>
             <div id="title" class="col-8">Private Voting</div>
             <div id="wallet" class="col-3">
