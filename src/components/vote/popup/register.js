@@ -14,31 +14,36 @@ function Register({ metric, setPopup }) {
         ////api
         setPopup({ action: "none" })
     }
-    return (<div className="popup">
-        <div className="popup_inner">
-            <div className="popup_header">
-                Register {metric.name} with Ziden
-            </div>
-            {
-                state == 0
-                    ? <div className="popup_content">
-                        <div className="h_left">Enter Ziden Password</div>
-                        <input id="password" placeholder="password"></input>
-                        <div className="popup_button">
-                            <button className="confirm" onClick={() => enterPassword(document.getElementById("password").value)}>Confirm</button>
-                        </div>
+    return (<div >
+
+        {
+            state == 0
+                ? <div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon3">Ziden Password</span>
+                        <input type="text" class="form-control" id="ziden_password" aria-describedby="basic-addon3" />
+
                     </div>
-                    : <div className="popup_content">
-                        <div className="h_left">Your Current {metric.name}: </div>
-                        <div className="h_right">{state}</div>
-                        <div className="h_left">Your Attest {metric.name}</div>
-                        <input id="attest"></input>
-                        <div className="popup_button">
-                            <button className="generate" onClick={() => generatePower(document.getElementById("attest").value)}>generate</button>
-                        </div>
+                    <div className="d-flex justify-content-end">
+                        <button className="btn btn-outline-dark" onClick={() => enterPassword(document.getElementById("ziden_password").value)}>Confirm</button>
                     </div>
-            }
-        </div>
+
+
+                </div>
+                : <div className="popup_content">
+                    <div className="h5">Your Current Metric: {state}</div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon3">Your Attest Metric</span>
+                        <input type="text" class="form-control" id="attest" aria-describedby="basic-addon3" />
+
+
+
+                    </div>
+                    <div className="d-flex justify-content-end">
+                        <button className="btn btn-outline-dark" onClick={() => generatePower(document.getElementById("attest").value)}>generate</button>
+                    </div>
+                </div>
+        }
     </div>);
 }
 

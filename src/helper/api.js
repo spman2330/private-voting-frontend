@@ -117,12 +117,10 @@ export function convertTime(time) {
     return formattedTime;
 }
 export async function connectMetamask() {
-    const accounts = await window.ethereum.request({
-        method: "eth_requestAccounts",
-    });
+    await window.ethereum.request({ method: 'eth_requestAccounts' });
     const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const walletAddress = accounts[0];
-    return walletAddress;
+    const signer = provider.getSigner();
+    return await signer.getAddress();
 }
 export async function getListPoll() {
     const url = 'https://data-seed-prebsc-1-s1.binance.org:8545/';
@@ -132,7 +130,7 @@ export async function getListPoll() {
     var count = await votingContract.methods.pollCount().call();
     count = Number(count);
     var data = [];
-    for (let i = 1; i <= count; i++) {
+    for (let i = count; i > 0; i--) {
         var datai = await votingContract.methods.polls(i).call();
         const dataii = {};
         dataii.id = Number(datai.id);

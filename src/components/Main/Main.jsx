@@ -113,9 +113,9 @@ const Main = () => {
     }, [address, polls]);
 
     return (
-        <div id="main" class="container">
+        <div id="main">
             <Bar address={reduce(address)} setAddress={setAddress} />
-            <div id="page" class="mt-4">
+            <div id="page" class="mt-5 pt-5 container">
                 {page == "Menu" && < Menu polls={polls} setPage={setPage} setPollId={setPollId} />}
                 {page == "Poll" && < Poll poll={polls.find(poll => poll.id === pollId)} setPage={setPage} />}
                 {page == "Register" && <VotePage proposal={polls.find(poll => poll.id === pollId)} setPage={setPage} />}

@@ -3,12 +3,15 @@ import { convertTime } from '../../helper/api';
 
 const Menu = ({ polls, setPage, setPollId }) => {
     return (
-        <div id="menu" class="row">
+        <div id="menu">
 
-            <div id="title" class="row">
-                <h4>Proposals</h4>
+            <div id="title" class="h2 mb-4">
+                Proposals
             </div>
-            {polls.map(poll => <Poll key={poll.id} poll={poll} setPage={setPage} setPollId={setPollId} />)}
+            <div class="list-group list-group-checkable d-grid gap-2 border-0 ">
+                {polls.map(poll => <Poll key={poll.id} poll={poll} setPage={setPage} setPollId={setPollId} />)}
+            </div>
+
         </div>
     );
 };
@@ -18,22 +21,28 @@ const Poll = ({ poll, setPage, setPollId }) => {
         setPage("Poll");
         setPollId(poll.id);
     }
+    var css_status;
+    if (poll.status == "Succeeded") css_status = "text-success";
+    else if (poll.status == "Done") css_status = "text-danger";
+    else css_status = "text-primary";
     return (
-        <div id={"poll-" + poll.id} class="border border-black row mb-2" onClick={handleClick}>
-            <div class="col-8">
-                <div class="row">{poll.title}</div>
-                <div class="row">
-                    <div class="col-1">{poll.status}</div>
-                    <div class="col-4">start: {convertTime(poll.start)}</div>
-                    <div class="col-4">end: {convertTime(poll.end)}</div>
-                </div>
+        <div id={"poll-" + poll.id} class="list-group-item rounded-3 py-3" onClick={handleClick}>
+            <div>
+                <div class="h5">{poll.title}</div>
+                <div class={css_status + " h6"}>{poll.status}</div>
+
             </div>
-            <div class="col-4">
+            <div class="align-items-center d-flex">
+                <div class="col-8">
+                    <div >start: {convertTime(poll.start)}</div>
+                    <div >end: {convertTime(poll.end)}</div>
+                </div>
+
                 {poll.status !== "Done" ?
-                    <div class="row">Voting results will be announced only after done</div> :
+                    <div class="text-secondary">Voting results will be announced only after done</div> :
                     <div>
-                        <div class="row"> For: {poll.for}</div>
-                        <div class="row">Against: {poll.against}</div>
+                        <div class="h6"> For: {poll.for}</div>
+                        <div class="h6">Against: {poll.against}</div>
                     </div>
                 }
             </div>

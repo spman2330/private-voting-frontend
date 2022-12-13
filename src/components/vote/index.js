@@ -3,7 +3,8 @@ import { useState, useEffect } from "react";
 import { fetchMetric } from "../../helper/api";
 import Option from "./popup/option";
 import Register from "./popup/register";
-
+import { Modal } from "react-bootstrap";
+import { poll } from "ethers/lib/utils";
 
 function VotePage({ proposal, setPage }) {
     const [metrics, setMetrics] = useState([]);
@@ -29,19 +30,35 @@ function VotePage({ proposal, setPage }) {
         }
     }, [popup]);
     return (
-        <div className="vote_page">
-            <div class="row">
-                <button class="col-1" onClick={handleClick}>Back</button>
+        <div>
+            <button class="btn btn-outline-dark" onClick={handleClick}>Back</button>
+            <div className="h2"> {proposal.title} </div>
+            <div class="d-flex h5 align-items-center justify-content-between">
+                <div> Your current voting power: {voting_power}</div>
+                <button class="btn btn-outline-dark" onClick={() => setPopup({ action: "vote" })}>Vote</button>
+
             </div>
-            <div className="proposal_title"> {proposal.title} </div>
-            <div className="h_left"> Your current voting power:</div>
-            <div className="h_right"> {voting_power}</div>
-            <button className="vote_button" onClick={() => setPopup({ action: "vote" })}>Vote</button>
-            <div className="vote_content">
+
+            <div className="list-group list-group-checkable d-grid gap-1 border-0">
                 {metrics.map((data, index) => <Metric data={data} key={index} setPopup={setPopup}></Metric>)}
-            </div>=
-            {(popup.action === "none" || popup.action === "done") ? null : (popup.action === "vote" ? <Option voting_power={voting_power} setPopup={setPopup} id={proposal.id} /> :
-                <Register metric={popup.metric} setPopup={setPopup} />)}
+            </div>
+            <Modal show={popup.action == "vote"}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Your Options</Modal.Title>
+                </Modal.Header>
+                <Modal.Body><Option voting_power={voting_power} setPopup={setPopup} id={proposal.id} /></Modal.Body>
+
+            </Modal>
+            <Modal show={popup.action == "register"}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Register {popup.action == "register" ? popup.metric.name : "a"} with Ziden</Modal.Title>
+                </Modal.Header>
+                <Modal.Body><Register metric={popup.metric} setPopup={setPopup} /></Modal.Body>
+
+            </Modal>
+            {/* {(popup.action === "none" || popup.action === "done") ? null : (popup.action === "vote" ? <Option voting_power={voting_power} setPopup={setPopup} id={proposal.id} /> :
+                <Register metric={popup.metric} setPopup={setPopup} />)
+            } */}
 
 
         </div >);
