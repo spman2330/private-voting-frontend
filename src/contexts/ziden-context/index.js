@@ -8,7 +8,7 @@ import {
   OPERATOR,
   claim,
   utils,
-  queryMTP
+  queryMTP,
 } from "zidenjs";
 import React from "react";
 import { useWeb3Context } from "../web3-context";
@@ -19,12 +19,13 @@ export const ZidenProvider = ({ children }) => {
   const [users, setUsers] = useState([]);
   const [queries, setQueries] = useState([]);
   const [claims, setClaims] = useState([]);
-  const {address} = useWeb3Context();
+  const [amounts, setAmounts] = useState([]);
+  const { address } = useWeb3Context();
   const BigInt = window.BigInt;
   const setupUsers = async () => {
     console.log("setup users");
     const users = [];
-    
+
     const numberOfUsers = 6;
     for (let i = 0; i < numberOfUsers; i++) {
       const privateKey = Buffer.alloc(32, i * 11 + 11);
@@ -92,13 +93,17 @@ export const ZidenProvider = ({ children }) => {
 
     const { newClaim, schemaHashFromBigInt, withIndexID, withSlotData } = claim;
     const { numToBits, setBits } = utils;
+    const amount0 = query0.values[0] + BigInt(11);
+    const amount1 = query1.values[0] + BigInt(11);
+    const amount2 = query2.values[0] + BigInt(11);
+    setAmounts([amount0.toString(), amount1.toString(), amount2.toString()])
     claim0 = newClaim(
       schemaHashFromBigInt(query0.claimSchema),
       withIndexID(users[3].state.userID),
       withSlotData(
         query0.slotIndex,
         numToBits(
-          setBits(BigInt(0), query0.from, query0.values[0] + BigInt(11)),
+          setBits(BigInt(0), query0.from, amount0),
           32
         )
       )
@@ -109,7 +114,7 @@ export const ZidenProvider = ({ children }) => {
       withSlotData(
         query1.slotIndex,
         numToBits(
-          setBits(BigInt(0), query1.from, query1.values[0] + BigInt(11)),
+          setBits(BigInt(0), query1.from, amount1),
           32
         )
       )
@@ -120,7 +125,7 @@ export const ZidenProvider = ({ children }) => {
       withSlotData(
         query2.slotIndex,
         numToBits(
-          setBits(BigInt(0), query2.from, query2.values[0] + BigInt(11)),
+          setBits(BigInt(0), query2.from, amount2),
           32
         )
       )
@@ -186,22 +191,20 @@ export const ZidenProvider = ({ children }) => {
         claim.hiRaw(),
         issuer.state
       );
-      const kycNonRevInput =
-        await queryMTP.kycGenerateNonRevQueryMTPInput(
-          claim.getRevocationNonce(),
-          issuer.state
-        );
-      const inputs =
-        await queryMTP.holderGenerateQueryMTPWitnessWithPrivateKey(
-          claim,
-          holder.auths[0].privateKey,
-          holder.auths[0].value,
-          BigInt(address),
-          holder.state,
-          kycMTPInput,
-          kycNonRevInput,
-          query
-        );
+      const kycNonRevInput = await queryMTP.kycGenerateNonRevQueryMTPInput(
+        claim.getRevocationNonce(),
+        issuer.state
+      );
+      const inputs = await queryMTP.holderGenerateQueryMTPWitnessWithPrivateKey(
+        claim,
+        holder.auths[0].privateKey,
+        holder.auths[0].value,
+        BigInt(address),
+        holder.state,
+        kycMTPInput,
+        kycNonRevInput,
+        query
+      );
 
       const start = Date.now();
       const { proof, publicSignals } = await window.snarkjs.groth16.fullProve(
@@ -216,7 +219,6 @@ export const ZidenProvider = ({ children }) => {
       console.error(err);
     }
   };
-
   const init = useCallback(async () => {
     await params.setupParams();
     await setupUsers();
@@ -225,6 +227,6 @@ export const ZidenProvider = ({ children }) => {
     init();
   }, [init]);
 
-  return <ZidenContext.Provider >{children}</ZidenContext.Provider>;
+  return <ZidenContext.Provider>{children}</ZidenContext.Provider>;
 };
 export const useZidenContext = () => React.useContext(ZidenContext);
