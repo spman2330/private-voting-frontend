@@ -212,7 +212,7 @@ export function Web3Provider({
         }
         return undefined;
     }, [web3State.accounts, chain, connectors]);
-    const rpcProvider = useMemo < JsonRpcProvider > (() => {
+    const rpcProvider = useMemo(() => {
         return new StaticJsonRpcProvider(
             chain.urls.includes(bestRpc ?? "") ? bestRpc : chain.urls[0]
         );

@@ -1,0 +1,20 @@
+const App=()=> {
+    const {
+        chain,
+        address,
+    }
+
+    =useWeb3Context();
+
+    return (<div> <h1> {
+            address
+        }
+
+        </h1> <h1> {
+            chain.name
+        }
+
+        </h1> </div>);
+}
+
+;
