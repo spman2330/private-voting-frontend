@@ -1,14 +1,15 @@
 import React from "react";
-
+import Menu from "../pages/Menu";
+import Poll from "../pages/Poll";
 export default [
     {
-        path: "/menu",
-        component: React.lazy(() => import("../pages/Menu")),
+        path: "",
+        element: <Menu />
     },
-    // {
-    //     path: "/poll",
-    //     component: React.lazy(() => import("../pages/Poll")),
-    // },
+    {
+        path: "/poll",
+        element: <Poll />,
+    },
     // {
     //     path: "/voting",
     //     component: React.lazy(() => import("../pages/Voting")),

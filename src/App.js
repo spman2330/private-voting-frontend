@@ -2,34 +2,23 @@ import React, { useEffect, useState } from "react";
 import { BigNumber, ethers } from "ethers";
 import "./App.css";
 import {
-    Redirect,
-    Route,
-    BrowserRouter as Router,
-    Switch,
+    BrowserRouter,
+    useRoutes,
+
 } from "react-router-dom";
 
-import { useWeb3Context } from "./contexts/web3-context"
-import { useContractContext } from "./contexts/contract-context";
+import routes from "./configs/routes";
 const App = () => {
-    const {
-        chain,
-        address,
-    } = useWeb3Context();
-    const [name, setName] = useState();
-    const { tokenCallContract } = useContractContext();
-    useEffect(() => {
-        const fetchData = async () => {
-            const tokenName = await tokenCallContract.name();
-            setName(tokenName);
-        }
-        fetchData().catch(console.error);
-    }, []);
+    console.log(routes)
+
     return (
         <div>
-            <h1>{chain.name}</h1>
-            <h1>{address}</h1>
-            <h1> {name}</h1>
+            {useRoutes(routes)}
         </div>
+
+
+
+
     );
 };
 export default App;

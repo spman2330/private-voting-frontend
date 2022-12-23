@@ -163,6 +163,7 @@ export function Web3Provider({
     };
     const _getConnector = () => {
         const storedConnector = getStoredConnector();
+
         if (storedConnector === CONNECTOR_TYPES.METAMASK) {
             return connectors.metamask;
         } else if (storedConnector === CONNECTOR_TYPES.WALLET_CONNECT) {
@@ -201,6 +202,7 @@ export function Web3Provider({
     useEffect(() => {
         // try connect to wallet
         const connector = _getConnector();
+
         if (connector) {
             connector.connectEagerly();
         }
@@ -210,6 +212,7 @@ export function Web3Provider({
         if (connector && connector.provider) {
             return new Web3EthereumProvider(connector.provider);
         }
+
         return undefined;
     }, [web3State.accounts, chain, connectors]);
     const rpcProvider = useMemo(() => {
@@ -217,6 +220,7 @@ export function Web3Provider({
             chain.urls.includes(bestRpc ?? "") ? bestRpc : chain.urls[0]
         );
     }, [bestRpc, chain]);
+
     const contextData = useMemo(() => {
         return {
             error: web3State.error,
