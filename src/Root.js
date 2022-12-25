@@ -4,28 +4,31 @@ import { ContractProvider } from "./contexts/contract-context";
 import { CHAIN_IDS } from "./contexts/web3-context/chains";
 import { SnackbarProvider } from 'notistack';
 import { VotingProvider } from "./contexts/voting-context";
+import { ZidenProvider } from "./contexts/ziden-context";
 import Layout from "./components/layout";
 let allowedChainIds = [CHAIN_IDS.BSC_TESTNET, CHAIN_IDS.GTH_TESTNET];
 const Root = () => {
-    return (
-        <Web3Provider
-            allowedChainIds={allowedChainIds}
-            defaultChainId={allowedChainIds[0]}
-            autoSwitchNetwork={true}
-        >
-            <ContractProvider>
-                <VotingProvider>
-                    <SnackbarProvider maxSnack={3}>
-                        <Layout>
-                            <App />
-                        </Layout>
+  return (
+    <Web3Provider
+      allowedChainIds={allowedChainIds}
+      defaultChainId={allowedChainIds[0]}
+      autoSwitchNetwork={true}
+    >
+      <ContractProvider>
+        <VotingProvider>
+          <ZidenProvider>
+            <SnackbarProvider maxSnack={3}>
+              <Layout>
+                <App />
+              </Layout>
 
-                    </SnackbarProvider>
-                </VotingProvider>
+            </SnackbarProvider>
+          </ZidenProvider>
+        </VotingProvider>
 
-            </ContractProvider>
+      </ContractProvider>
 
-        </Web3Provider>
-    );
+    </Web3Provider>
+  );
 };
 export default Root;

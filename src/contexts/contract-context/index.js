@@ -31,6 +31,9 @@ export function ContractProvider({
             return undefined;
         }
     }, [chain, web3Provider, address]);
+    console.log(web3Provider, "___")
+    console.log(votingTransContract, "...")
+    console.log(votingCallContract);
     const contextData = useMemo(() => {
         return {
             tokenCallContract,

@@ -8,7 +8,7 @@ function Layout({ children }) {
                 <div class="col-2 h3">Private Voting</div>
                 <div class="col-6 h5">{chain.name}</div>
                 <div class="col-2">
-                    {address != '...' ? address : <button className="btn btn-outline-light me-2 text-end" onClick={connectMetaMask}>Connect wallet</button>}
+                    {address != null ? address : <button className="btn btn-outline-light me-2 text-end" onClick={connectMetaMask}>Connect wallet</button>}
                 </div>
             </div>
 

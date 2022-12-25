@@ -210,11 +210,13 @@ export function Web3Provider({
     const web3Provider = useMemo(() => {
         const connector = _getConnector();
         if (connector && connector.provider) {
+
             return new Web3EthereumProvider(connector.provider);
         }
 
         return undefined;
     }, [web3State.accounts, chain, connectors]);
+    console.log(web3Provider, "web3");
     const rpcProvider = useMemo(() => {
         return new StaticJsonRpcProvider(
             chain.urls.includes(bestRpc ?? "") ? bestRpc : chain.urls[0]

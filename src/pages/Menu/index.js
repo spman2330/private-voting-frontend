@@ -2,14 +2,12 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useVotingContext } from "../../contexts/voting-context";
 function Menu() {
-    const { polls, getListPoll } = useVotingContext();
+    const { polls } = useVotingContext();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        getListPoll()
-    }, [])
 
-    console.log(polls)
+
+    console.log(polls, 2)
     return (<div>
         <div class="h2 mb-4">Proposals</div>
         <div class="list-group list-group-checkable d-grid gap-2 border-0 ">
@@ -17,10 +15,10 @@ function Menu() {
                 polls.map(poll =>
                     <div
                         class="list-group-item rounded-3 py-3"
-                        onClick={() => navigate("poll")}
+                        onClick={() => navigate((poll.id).toString())}
                     >
                         <div>
-                            <div class="h5">{(poll.content)}</div>
+                            <div class="h5">{(poll.tittle)}</div>
                             <div>{poll.status}</div>
                         </div>
                         <div class="align-items-center d-flex">

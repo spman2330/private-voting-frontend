@@ -9,7 +9,6 @@ import {
 
 import routes from "./configs/routes";
 const App = () => {
-    console.log(routes)
 
     return (
         <div>

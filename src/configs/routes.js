@@ -1,17 +1,18 @@
 import React from "react";
 import Menu from "../pages/Menu";
 import Poll from "../pages/Poll";
+import Voting from "../pages/Voting";
 export default [
     {
         path: "",
         element: <Menu />
     },
     {
-        path: "/poll",
+        path: ":id",
         element: <Poll />,
     },
-    // {
-    //     path: "/voting",
-    //     component: React.lazy(() => import("../pages/Voting")),
-    // },
+    {
+        path: "/voting/:id",
+        element: <Voting />
+    },
 ]
