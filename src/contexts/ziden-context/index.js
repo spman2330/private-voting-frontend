@@ -12,7 +12,7 @@ import {
 } from "zidenjs";
 import React from "react";
 import { useWeb3Context } from "../web3-context";
-
+import { useContractContext } from "../contract-context";
 const ZidenContext = createContext();
 
 export const ZidenProvider = ({ children }) => {
@@ -20,7 +20,9 @@ export const ZidenProvider = ({ children }) => {
   const [queries, setQueries] = useState([]);
   const [claims, setClaims] = useState([]);
   const [amounts, setAmounts] = useState([]);
+  const [factor, setFactor] = useState([]);
   const { address } = useWeb3Context();
+  const { registerCallContract } = useContractContext()
   const BigInt = window.BigInt;
   const setupUsers = async () => {
     console.log("setup users");
@@ -58,7 +60,7 @@ export const ZidenProvider = ({ children }) => {
     query0 = {
       slotIndex: 2,
       operator: OPERATOR.GREATER_THAN,
-      values: [BigInt("10000000")],
+      values: [BigInt("0")],
       from: 50,
       to: 100,
       valueTreeDepth: 6,
@@ -69,7 +71,7 @@ export const ZidenProvider = ({ children }) => {
     query1 = {
       slotIndex: 3,
       operator: OPERATOR.GREATER_THAN,
-      values: [BigInt("100000000")],
+      values: [BigInt("0")],
       from: 50,
       to: 100,
       valueTreeDepth: 6,
@@ -80,7 +82,7 @@ export const ZidenProvider = ({ children }) => {
     query2 = {
       slotIndex: 6,
       operator: OPERATOR.GREATER_THAN,
-      values: [BigInt("1000000000")],
+      values: [BigInt("0")],
       from: 50,
       to: 100,
       valueTreeDepth: 6,
@@ -93,9 +95,9 @@ export const ZidenProvider = ({ children }) => {
 
     const { newClaim, schemaHashFromBigInt, withIndexID, withSlotData } = claim;
     const { numToBits, setBits } = utils;
-    const amount0 = query0.values[0] + BigInt(11);
-    const amount1 = query1.values[0] + BigInt(11);
-    const amount2 = query2.values[0] + BigInt(11);
+    const amount0 = BigInt("10000011")
+    const amount1 = BigInt("100000011");
+    const amount2 = BigInt("1000000011")
     setAmounts([amount0.toString(), amount1.toString(), amount2.toString()])
     claim0 = newClaim(
       schemaHashFromBigInt(query0.claimSchema),
@@ -173,16 +175,28 @@ export const ZidenProvider = ({ children }) => {
     return { a, b, c, pubSigs: publicInputs };
   };
 
+  const getZidenFactor = async (queryId) => {
+    const allowedQueries = await registerCallContract.allowedQueries(queryId);
+    return allowedQueries.factor.toString();
+  }
+
+  const getFactor = async () => {
+    factor[0] = await getZidenFactor(0);
+    factor[1] = await getZidenFactor(1);
+    factor[2] = await getZidenFactor(2);
+    setFactor([...factor])
+  }
   // 0, 3, 0, 0
   // 1, 4, 1, 1
   // 2, 5, 2, 2
+
   const genGetVotingPowerCalldata = async (
     issuerIndex,
     holderIndex,
     claimIndex,
     queryIndex
   ) => {
-
+    var time = Date.now();
     //try {
     const claim = claims[claimIndex];
     const query = queries[queryIndex];
@@ -224,6 +238,7 @@ export const ZidenProvider = ({ children }) => {
     // }
   };
   const init = useCallback(async () => {
+    await getFactor();
     await params.setupParams();
     await setupUsers();
   }, []);
@@ -231,6 +246,6 @@ export const ZidenProvider = ({ children }) => {
     init();
   }, [init]);
 
-  return <ZidenContext.Provider value={{ genGetVotingPowerCalldata, amounts, queries }}>{children}</ZidenContext.Provider>;
+  return <ZidenContext.Provider value={{ genGetVotingPowerCalldata, amounts, queries, factor, setQueries }}>{children}</ZidenContext.Provider>;
 };
 export const useZidenContext = () => React.useContext(ZidenContext);

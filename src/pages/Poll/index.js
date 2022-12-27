@@ -5,7 +5,7 @@ function Poll() {
     let { id } = useParams()
     const navigate = useNavigate()
     const { polls } = useVotingContext();
-    const poll = polls[polls.length - id];
+    const poll = polls.find(e => e.id == id);
 
     return (<div>
         <div id="poll">
@@ -15,7 +15,7 @@ function Poll() {
             <div>
                 <div class="col-3 h2"> {poll.tittle}</div>
                 <div class="d-flex justify-content-between align-items-center mb-2">
-                    <div > {poll.status}</div>
+                    <div class={poll.css_status} > {poll.status}</div>
                     {poll.status === "Active" && (
                         <div>
                             <button class="btn btn-outline-dark" onClick={() => navigate("../voting/" + id)} >

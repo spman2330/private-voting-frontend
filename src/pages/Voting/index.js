@@ -11,37 +11,38 @@ const BigInt = window.BigInt
 function Voting() {
     const navigate = useNavigate();
     const { id } = useParams();
-    const { votePoll, polls, getVotingPower, getTotalPower } = useVotingContext();
-    const poll = polls[polls.length - id]
-    const [power, setPower] = useState([0, 0]);
+    const { address } = useWeb3Context()
+    const { votePoll, polls, getVotingPower } = useVotingContext();
+    const poll = polls.find(e => e.id == id);
+    const [power, setPower] = useState(0);
     const [openVote, setOpenVote] = useState(false);
-    const [openRegister, setOpenRegister] = useState(false);
+    const [openRegister, setOpenRegister] = useState(-1);
     const [loading, setLoading] = useState(false);
     const [user, setUser] = useState(4);
-    const [proofsZiden, setProofsZiden] = useState();
-    const { amounts, genGetVotingPowerCalldata, queries } = useZidenContext();
+    const [proofsZiden, setProofsZiden] = useState([]);
+    const { amounts, genGetVotingPowerCalldata, queries, factor, setQueries } = useZidenContext();
 
     const callDataInput = [[0, 3, 0, 0], [1, 4, 1, 1], [2, 5, 2, 2]]
     const publicKey = (poll.publicKey).toString();
     console.log(proofsZiden);
     useEffect(() => {
         const fetchPower = async () => {
-            power[0] = (await getVotingPower(poll.startTimeStamp)).toString();
-            setPower([...power])
+            var power1 = (await getVotingPower(poll.startTimeStamp)).toString();
+            console.log(power1)
+            setPower(power1)
         }
 
         fetchPower()
-    }, [user])
-    useEffect(() => {
-        if (user < 4) {
-            power[1] = queries[user].values[0].toString();
-            setPower([...power]);
-        }
-    }, [user])
+    }, [address])
+
+    const realPower = (i) => {
+        console.log(queries)
+        return (BigInt(queries[i].values[0]) * BigInt(factor[i])).toString();
+    }
     const totalPower = () => {
-        var sum = 0n;
-        for (var i = 0; i < power.length; i++)
-            sum += BigInt(power[i]);
+        var sum = BigInt(power);
+        for (var i = 0; i < queries.length; i++)
+            sum += BigInt(realPower(i));
         return sum.toString();
     }
     const vote = async (sign) => {
@@ -58,6 +59,7 @@ function Voting() {
         setOpenVote(false);
     }
 
+
     return (<div>
         <button class="btn btn-outline-dark" onClick={() => { navigate("../../" + id) }}>Back</button>
         <div className="d-flex justify-content-between">
@@ -71,62 +73,66 @@ function Voting() {
                 <div className="h6"> Factor: 1</div>
             </div>
             <div className="p-2 mt-2">
-                <div className="h6">Your Amount: {power[0]} </div>
-                <div className="h6">Your Voting Power: {power[0]} </div>
+                <div className="h6">Your Amount: {power} </div>
+                <div className="h6">Your Voting Power: {power} </div>
 
             </div>
         </div>
-        <div className="border rounded-3 p-2 mt-2">
-            <div className="border-bottom justify-content-between d-flex  align-items-center">
-                <div className="h5">Ziden Metric</div>
-                <div className="h6"> Factor: 1</div>
-            </div>
-            {
-                power[1] ?
-                    <div className="p-2 mt-2">
-                        <div className="h6">Your Amount: {power[1]} </div>
-                        <div className="h6">Your Voting Power: {power[1]} </div>
+        {
+            queries.map((e, i) =>
+                <div className="border rounded-3 p-2 mt-2">
+                    <div className="border-bottom justify-content-between d-flex  align-items-center">
+                        <div className="h5">Ziden Metric {i}</div>
+                        <div className="h6"> Factor: {factor[i]}</div>
                     </div>
-                    : <div>
-                        <button className="btn btn-outline-dark m-2" onClick={() => { setOpenRegister(true) }}> Register </button>
-                    </div>
-            }
+                    {
+                        queries[i].values[0] ?
+                            <div className="p-2 mt-2">
+                                <div className="h6">Your Amount: {amounts[i]} </div>
+                                <div className="h6">Your Voting Power: {realPower(i)} </div>
+                            </div>
+                            : <div>
+                                <button className="btn btn-outline-dark m-2" onClick={() => { setOpenRegister(i) }}> Register </button>
+                            </div>
+                    }
 
-        </div>
-        <Modal show={openRegister}>
+                </div>
+            )
+        }
+
+        <Modal show={openRegister >= 0}>
             <Modal.Header>
-                Ziden metric
+                <div class="d-flex justify-content-between flex-fill">
+                    <div> Ziden Metric </div>
+                    <div onClick={() => setOpenRegister(-1)}> X </div>
+                </div>
             </Modal.Header>
             <Modal.Body>
-                {user < 4 ?
+                {
                     <div>
-                        <div class="h4 mb-4">Your Current Ziden Score: {amounts[user]}</div>
-                        <div class="h4 mb-4">Your Attest Score: {power[1]}</div>
-                        <button className="btn btn-outline-dark" onClick={async () => {
-                            const proof = await genGetVotingPowerCalldata(...callDataInput[user]);
-                            proof.queryId = user;
-                            proof.fromTimestamp = poll.startTimeStamp;
-                            proof.toTimestamp = proof.fromTimestamp + 10000;
-                            console.log((await getTotalPower(id, [proof])).toString())
-                            setProofsZiden([proof])
-                            setOpenRegister(false);
-                        }}> Confirm </button>
-                    </div>
-                    :
-                    <div>
-                        <select class="form-select form-select-sm mb-2" aria-label=".form-select-sm example" id="select_user">
-                            <option value="0">user 1</option>
-                            <option value="1">user 2</option>
-                            <option value="2">user 3</option>
-                        </select>
-                        <div class="justify-content-end d-flex">
-                            <button className="btn btn-outline-dark" onClick={() => {
-                                setUser(document.getElementById("select_user").value);
+                        <div class="h4 mb-4">Your Current Ziden Score: {amounts[openRegister]}</div>
+                        <Input id="attest_score">Your Attest Score: </Input>
+                        <div class="d-flex justify-content-center flex-fill">
+                            <button className="btn btn-outline-dark" onClick={async () => {
+                                const attest_score = document.getElementById("attest_score").value;
+                                queries[openRegister].values[0] = BigInt(attest_score);
+                                setQueries(queries);
+                                const proof = await genGetVotingPowerCalldata(...callDataInput[openRegister]);
 
+                                proof.queryId = openRegister;
+                                proof.fromTimestamp = poll.startTimeStamp;
+                                proof.toTimestamp = proof.fromTimestamp + 10000;
+                                console.log(proof);
+                                proofsZiden[openRegister] = proof
+                                setProofsZiden([...proofsZiden])
+                                setOpenRegister(-1);
                             }}> Confirm </button>
                         </div>
 
                     </div>
+
+
+
                 }
             </Modal.Body>
         </Modal>
@@ -134,7 +140,11 @@ function Voting() {
 
         <Modal show={openVote}>
             <Modal.Header>
-                Your Option
+                <div class="d-flex justify-content-between flex-fill">
+                    <div> Your Option </div>
+                    <div onClick={() => setOpenVote(false)}> X </div>
+                </div>
+
             </Modal.Header>
             <Modal.Body>
                 <div >
@@ -152,8 +162,8 @@ function Voting() {
                             </button>
                         ) : (
                             <div className="">
-                                <button className="btn btn-outline-dark m-2" onClick={() => { vote(0) }}> Vote Yes </button>
-                                <button className="btn btn-outline-dark" onClick={() => { vote(1) }}> Vote No </button>
+                                <button className="btn btn-outline-dark m-2" onClick={() => { vote(1) }}> Vote Yes </button>
+                                <button className="btn btn-outline-dark" onClick={() => { vote(0) }}> Vote No </button>
                             </div>
                         )}
                     </div>
@@ -162,5 +172,9 @@ function Voting() {
         </Modal>
     </div>);
 }
+
+
+
+
 
 export default Voting;

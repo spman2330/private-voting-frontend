@@ -1,8 +1,9 @@
 import { CHAIN_IDS } from "../web3-context/chains"
 
 const BSC = {
-    token: "0xB1DFEcE55eb3D6898CcDB6308a6516838ff8910B",
-    voting: "0x399530e173E569AE8De5258bf391d58a3e7AE31a",
+    token: "0x0318c93C2735AfE93D701907567378cC3e3a2aDa",
+    voting: "0x7ABfF307E5BB3fE36e09A53B77f3485D725a118e",
+    register: "0xDF69B1DdF58a063FD6573065c106589E1Ca3984B"
 }
 const GTH = {
     token: "0xECB91C95f10beF9549e554151b32ef5A5bfDe320",

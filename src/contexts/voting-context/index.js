@@ -4,11 +4,12 @@ import { useWeb3Context } from "../web3-context";
 
 const VotingContext = createContext({})
 const status = ["Pending", "Active", "Done", "Canceled", "Succeeded"];
+const css_status = ["text-primary", "text-primary", "text-danger", "", "text-success"];
 const BigInt = window.BigInt;
 const snarkjs = window.snarkjs;
 export function VotingProvider({ children }) {
-    const { votingCallContract, votingTransContract, tokenCallContract } = useContractContext();
-    console.log(votingTransContract);
+    const { votingCallContract, votingTransContract, tokenCallContract, registerCallContract } = useContractContext();
+
     const { address } = useWeb3Context();
     const [polls, setPolls] = useState([]);
     const getList = async () => {
@@ -16,11 +17,14 @@ export function VotingProvider({ children }) {
         const pollCount = await votingCallContract.pollCount();
         for (var i = pollCount; i; i--) {
             const poll = await votingCallContract.polls(i);
-            const stt = status[(await votingCallContract.state(i)).toString()];
-            pollss.push({ ...poll, status: stt });
+            const state = (await votingCallContract.state(i)).toString()
+            const stt = status[state];
+
+            pollss.push({ ...poll, status: status[state], css_status: css_status[state] });
         }
         setPolls(pollss);
     }
+
     useEffect(() => {
         getList();
     }, [])
@@ -44,15 +48,14 @@ export function VotingProvider({ children }) {
         publicInputs = callData.slice(8, callData.length).map((e) => BigInt(e));
         return { a, b, c, publicInputs };
     }
-
+    console.log(registerCallContract, "register");
     const getVotingPower = async (startTimeStamp) => {
-
         return (await tokenCallContract.getPriorVotes(address, startTimeStamp));
     }
 
-    const getTotalPower = async (pollId, proofsZiden) => {
-        return (await votingCallContract.getVotingPower(pollId, proofsZiden, address))
-    }
+
+
+
 
     const votePoll = async (id, vote, sign, pubKey, power, proofsZiden) => {
         vote = BigInt(vote);
@@ -81,11 +84,11 @@ export function VotingProvider({ children }) {
 
         const { a, b, c, publicInputs } = await genCallData(proof, publicSignals)
 
-        await votingTransContract.votePoll(a, b, c, id, publicInputs[0], [publicInputs[1], publicInputs[2], publicInputs[3], publicInputs[4]], proofsZiden, { gasLimit: 1e6 });
+        await votingTransContract.votePoll(a, b, c, id, publicInputs[0], [publicInputs[1], publicInputs[2], publicInputs[3], publicInputs[4]], proofsZiden, { gasLimit: 3e6 });
 
     }
 
-    return (<VotingContext.Provider value={{ polls, votePoll, getVotingPower, getTotalPower }}>
+    return (<VotingContext.Provider value={{ polls, votePoll, getVotingPower }}>
         {children}
     </VotingContext.Provider>)
 

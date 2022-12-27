@@ -5,9 +5,6 @@ function Menu() {
     const { polls } = useVotingContext();
     const navigate = useNavigate();
 
-
-
-    console.log(polls, 2)
     return (<div>
         <div class="h2 mb-4">Proposals</div>
         <div class="list-group list-group-checkable d-grid gap-2 border-0 ">
@@ -19,7 +16,7 @@ function Menu() {
                     >
                         <div>
                             <div class="h5">{(poll.tittle)}</div>
-                            <div>{poll.status}</div>
+                            <div class={poll.css_status}>{poll.status}</div>
                         </div>
                         <div class="align-items-center d-flex">
                             <div class="col-8">

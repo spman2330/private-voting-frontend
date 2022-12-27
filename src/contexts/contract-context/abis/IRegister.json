@@ -1,0 +1,130 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "IRegister",
+  "sourceName": "contracts/interfaces/IRegister.sol",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "queryId",
+          "type": "uint256"
+        }
+      ],
+      "name": "allowedQueries",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "issuerId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "factor",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint128",
+              "name": "claimSchema",
+              "type": "uint128"
+            },
+            {
+              "internalType": "uint16",
+              "name": "from",
+              "type": "uint16"
+            },
+            {
+              "internalType": "uint16",
+              "name": "to",
+              "type": "uint16"
+            },
+            {
+              "internalType": "uint8",
+              "name": "slotIndex",
+              "type": "uint8"
+            }
+          ],
+          "internalType": "struct IRegister.AllowedQuery",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256[2]",
+          "name": "a",
+          "type": "uint256[2]"
+        },
+        {
+          "internalType": "uint256[2][2]",
+          "name": "b",
+          "type": "uint256[2][2]"
+        },
+        {
+          "internalType": "uint256[2]",
+          "name": "c",
+          "type": "uint256[2]"
+        },
+        {
+          "internalType": "uint256[12]",
+          "name": "pubSigs",
+          "type": "uint256[12]"
+        },
+        {
+          "internalType": "uint256",
+          "name": "queryId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint64",
+          "name": "fromTimestamp",
+          "type": "uint64"
+        },
+        {
+          "internalType": "uint64",
+          "name": "toTimestamp",
+          "type": "uint64"
+        }
+      ],
+      "name": "getVotingPower",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "queryId",
+          "type": "uint256"
+        }
+      ],
+      "name": "queryDisabled",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}
